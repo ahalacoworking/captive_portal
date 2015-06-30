@@ -48,8 +48,8 @@ app.get('/', function(req, res) {
     var grant_id = parseInt(Math.random()*100000000000);
     
     var continue_url = CONFIG.base_uri+"/enjoy?g="+grant_id;
-    if (req.query.continue_url) {
-      continue_url = req.query.continue_url;
+    if (req.query.user_continue_url) {
+      continue_url = req.query.user_continue_url;
     }
     
     grants[grant_id] = {g: grant_url, c: continue_url};

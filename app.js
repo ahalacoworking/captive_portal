@@ -78,7 +78,7 @@ app.get('/enjoy', function(req,res) {
     return;
   }
   var oauth_token = grant.oauth_token;
-  var user_name = "Anonymous";
+  var user_name = "Betahaus Member";
 
   if (oauth_token) {
     // resolve user details
@@ -101,7 +101,7 @@ app.get('/callback_member', function(req,res) {
     var grant = grants[grant_id];
     if (grant) {
       // break out
-      oauth2.authCode.getToken({
+      /*oauth2.authCode.getToken({
         code: code
       }, function(error, result) {
         if (error) {
@@ -111,7 +111,8 @@ app.get('/callback_member', function(req,res) {
           grant.oauth_token = token.access_token;
           res.render("breakout",{grant_uri:grant.g+"?g="+grant_id});
         }
-      });
+      });*/
+      res.render("breakout",{grant_uri:grant.g+"?g="+grant_id});
     } else {
       res.send("error: unknown grant.");
     }

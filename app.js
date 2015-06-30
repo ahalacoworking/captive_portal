@@ -121,7 +121,7 @@ app.get('/callback_member', function(req,res) {
           res.render("breakout",{grant_uri:grant.g+"?g="+grant_id});
         }
       });*/
-      res.render("breakout",{grant_uri:grant.g});
+      res.render("breakout",{grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
     } else {
       res.send("error: unknown grant.");
     }

@@ -46,7 +46,12 @@ app.get('/', function(req, res) {
 
   if (grant_url) {
     var grant_id = parseInt(Math.random()*100000000000);
+    
     var continue_url = CONFIG.base_uri+"/enjoy?g="+grant_id;
+    if (req.query.continue_url) {
+      continue_url = req.query.continue_url;
+    }
+    
     grants[grant_id] = {g: grant_url, c: continue_url};
 
     res.redirect("/hello/"+grant_id);
@@ -116,7 +121,7 @@ app.get('/callback_member', function(req,res) {
           res.render("breakout",{grant_uri:grant.g+"?g="+grant_id});
         }
       });*/
-      res.render("breakout",{grant_uri:grant.g+"?g="+grant_id});
+      res.render("breakout",{grant_uri:grant.g});
     } else {
       res.send("error: unknown grant.");
     }

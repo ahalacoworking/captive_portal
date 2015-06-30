@@ -4,8 +4,22 @@
 <div class="content">
   <div class="content-padded">
     <h2>Welcome to Betahaus Wi-Fi.</h2>
-    <p>Please log in with your Cobot credentials to access the internet.</p>
-    <iframe src="{{auth_uri}}" width="400" height="390"></iframe>
+    <div style="position:relative;margin:auto">
+      <p style="position: absolute;
+background-color: #EFEFF4;
+left: 50%;
+margin-left: -200px;
+height: 108px;
+padding-top: 30px;
+border-top: 1px solid #888;
+border-left: 1px solid #888;
+border-right: 1px solid #888;
+">Please log in with your Cobot credentials to access the internet.</p>
+    </div>
+    <iframe src="{{auth_uri}}" scrolling="no" width="400" height="355"></iframe>
+    <p style="margin-top:40px">
+      No account? Problems logging in? <a href="/help">More info</a>
+    </p>
   </div>
 </div>
 {% endblock %}

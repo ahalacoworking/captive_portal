@@ -82,7 +82,7 @@ app.get('/enjoy', function(req,res) {
 
   if (oauth_token) {
     // resolve user details
-    request.get(cobot_api+"user?access_token="+oauth_token, function(err, user_res) {
+    request.get(cobot_space_api+"user?access_token="+oauth_token, function(err, user_res) {
       console.log("user req result: ",user_res.body);
       var user = JSON.parse(user_res.body);
       
@@ -91,6 +91,10 @@ app.get('/enjoy', function(req,res) {
   } else {
     res.render("enjoy", {user_name:user_name});
   }
+});
+
+app.get('/help', function(req,res) {
+  res.render("help", {});
 });
 
 app.get('/callback_member', function(req,res) {

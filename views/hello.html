@@ -4,19 +4,18 @@
 <div class="content">
   <div class="content-padded">
     <h2>Welcome to Betahaus Wi-Fi.</h2>
-    <div style="position:relative;margin:auto">
-      <p style="position: absolute;
-background-color: #EFEFF4;
-left: 50%;
-margin-left: -200px;
-height: 108px;
-padding-top: 30px;
-border-top: 1px solid #888;
-border-left: 1px solid #888;
-border-right: 1px solid #888;
-">Please log in with your Cobot credentials to access the internet.</p>
+    <div class="message">
+      <p>Please log in with your Cobot credentials to access the internet.</p>
+      {% if status %}
+      <p><b>Error: {{status}}</b></p>
+      {% endif %}
     </div>
-    <iframe src="{{auth_uri}}" scrolling="no" width="400" height="355"></iframe>
+    <form method="POST" action="/login" id="login-form">
+      <input type="email" name="email" placeholder="Email" autofocus required>
+      <input type="password" name="password" placeholder="Password" required>
+      <input type="submit" name="submit" value="Login" class="btn btn-primary">
+      <input type="hidden" name="grant_id" value="{{grant_id}}">
+    </form>
     <p style="margin-top:40px">
       No account? Problems logging in? <a href="/help">More info</a>
     </p>

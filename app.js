@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var request = require('request');
+require('log-timestamp');
 
 // config --------------------------------------------------
 
@@ -65,14 +66,49 @@ app.get('/', function(req, res) {
 app.get('/hello/:grant_id', function(req,res) {
   var grant_id = req.params.grant_id;
   
-  var authorization_uri_member = oauth2.authCode.authorizeURL({
+  /*var authorization_uri_member = oauth2.authCode.authorizeURL({
     redirect_uri: CONFIG.base_uri+"/callback_member?grant="+grant_id,
     scope: 'read_user'
   });
 
-  console.log("authorization_uri_member: ",authorization_uri_member);
+  console.log("authorization_uri_member: ",authorization_uri_member);*/
 
-  res.render("hello",{auth_uri:authorization_uri_member});
+  res.render("hello", {status: req.query.status, grant_id: grant_id});
+});
+
+app.post('/login', function(req,res) {
+
+  var options = {
+    uri: cobot_space_api+"check_ins?access_token="+CONFIG.admin_token,
+    method: "POST",
+    json: {
+      "login": req.body.email,
+      "password": req.body.password
+    }
+  };
+
+  console.log("trying to log in: "+req.body.email);
+
+  request(options, function(err, cres) {
+    var status = cres.statusCode;
+    console.log("check-in result ("+status+") for "+req.body.email+": ", cres.body);
+
+    var grant_id = parseInt(req.body.grant_id);
+
+    if (status >= 200 && status < 400) {
+      res.render("enjoy", {user_name:req.body.email});
+    } else {
+      if (cres.body && cres.body.errors) {
+        status = cres.body.errors;
+        if (status.base) {
+          status = status.base.join(" ");
+        } else {
+          status = JSON.stringify(cres.body.errors);
+        }
+      }
+      res.redirect("/hello/"+grant_id+"?status="+status);
+    }
+  });
 });
 
 app.get('/enjoy', function(req,res) {
@@ -100,6 +136,30 @@ app.get('/enjoy', function(req,res) {
 
 app.get('/help', function(req,res) {
   res.render("help", {});
+});
+
+app.get('/admin_auth', function(req,res) {
+  var authorization_uri_admin = oauth2.authCode.authorizeURL({
+    redirect_uri: CONFIG.base_uri+"/callback_admin",
+    scope: 'read_user,checkin'
+  });
+  
+  res.redirect(authorization_uri_admin);
+});
+
+app.get('/callback_admin', function(req,res) {
+  var code = req.query.code;
+
+  oauth2.authCode.getToken({
+    code: code
+  }, function(error, result) {
+    if (error) {
+      console.log('Access Token Error', error.message);
+    } else {
+      var token = oauth2.accessToken.create(result).token;
+      res.send(token);
+    }
+  });
 });
 
 app.get('/callback_member', function(req,res) {
@@ -140,6 +200,6 @@ if (args[2]) {
 }
 
 var server = app.listen(port, function() {
-  console.log('Listening on port %d', server.address().port);
+  console.log('betahaus_captive listening on port %d', server.address().port);
 });
 

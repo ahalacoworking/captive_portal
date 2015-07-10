@@ -70,3 +70,13 @@ p {
   width: 400px;
   margin: auto;
 }
+
+#login-form {
+  max-width: 400px;
+  display: block;
+  margin: auto;
+}
+
+.message p {
+  margin-bottom: 20px;
+}

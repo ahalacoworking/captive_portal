@@ -213,8 +213,8 @@ var server = app.listen(port, function() {
 
 if (CONFIG.ssl) {
   var options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.cert')
+    key: fs.readFileSync('/etc/sslmate/hello.betahaus.com.key'),
+    cert: fs.readFileSync('/etc/sslmate/hello.betahaus.com.crt')
   };
 
   var https_server = https.createServer(options, app).listen(443, function() {

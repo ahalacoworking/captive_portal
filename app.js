@@ -118,7 +118,7 @@ app.get('/enjoy', function(req,res) {
     res.send("error: unknown grant.");
     return;
   }
-  var oauth_token = grant.oauth_token;
+  var oauth_token = null; //grant.oauth_token;
   var user_name = "Betahaus Member";
 
   if (oauth_token) {
@@ -130,7 +130,7 @@ app.get('/enjoy', function(req,res) {
       res.render("enjoy", {user_name:user.name||user.email});
     });
   } else {
-    res.render("enjoy", {user_name:user_name});
+    res.render("enjoy", {user_name:user_name, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
   }
 });
 

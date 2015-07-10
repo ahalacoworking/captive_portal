@@ -2,6 +2,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var request = require('request');
+var https = require('https');
 require('log-timestamp');
 
 // config --------------------------------------------------
@@ -209,4 +210,15 @@ if (args[2]) {
 var server = app.listen(port, function() {
   console.log('betahaus_captive listening on port %d', server.address().port);
 });
+
+if (CONFIG.ssl) {
+  var options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.cert')
+  };
+
+  var https_server = https.createServer(options, app).listen(443, function() {
+    console.log('betahaus_captive https listening on port 443');
+  });
+}
 

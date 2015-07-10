@@ -96,7 +96,8 @@ app.post('/login', function(req,res) {
     var grant_id = parseInt(req.body.grant_id);
 
     if (status >= 200 && status < 400) {
-      res.render("enjoy", {user_name:req.body.email});
+      var grant = grants[grant_id];
+      res.render("enjoy", {user_name:req.body.email, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
     } else {
       if (cres.body && cres.body.errors) {
         status = cres.body.errors;

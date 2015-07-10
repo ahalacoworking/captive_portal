@@ -102,7 +102,6 @@ app.post('/login', function(req,res) {
     var status = cres.statusCode;
     console.log("check-in result ("+status+") for "+req.body.email+": ", cres.body);
 
-
     if (status >= 200 && status < 400) {
       res.render("enjoy", {user_name:req.body.email, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
     } else {

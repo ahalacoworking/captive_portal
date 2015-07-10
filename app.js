@@ -89,14 +89,21 @@ app.post('/login', function(req,res) {
 
   console.log("trying to log in: "+req.body.email);
 
+  var grant_id = parseInt(req.body.grant_id);
+  var grant = grants[grant_id];
+
+  if (!grant) {
+    console.log("invalid grant.");
+    res.redirect("/");
+    return;
+  }
+  
   request(options, function(err, cres) {
     var status = cres.statusCode;
     console.log("check-in result ("+status+") for "+req.body.email+": ", cres.body);
 
-    var grant_id = parseInt(req.body.grant_id);
 
     if (status >= 200 && status < 400) {
-      var grant = grants[grant_id];
       res.render("enjoy", {user_name:req.body.email, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
     } else {
       if (cres.body && cres.body.errors) {

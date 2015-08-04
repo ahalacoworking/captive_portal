@@ -2,7 +2,7 @@
 A captive portal that connects cobot and the cisco meraki cloud. 
 
 # deployment of an update on the server
-# (betahaus-server is currently 46.101.250.128)
+(betahaus-server is currently 46.101.250.128)
 
     ssh root@betahaus-server
     su betahaus

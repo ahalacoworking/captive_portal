@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var request = require('request');
 var https = require('https');
+var fs = require('fs');
 require('log-timestamp');
 
 // config --------------------------------------------------

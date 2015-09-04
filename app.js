@@ -21,7 +21,7 @@ app.use("/uploads", express.static(__dirname + '/uploads'));
 app.use("/static", express.static(__dirname + '/static'));
 
 var swig  = require('swig');
-swig.setDefaults({ cache: true });
+swig.setDefaults({ cache: "memory" });
 
 app.engine('html', swig.renderFile);
 

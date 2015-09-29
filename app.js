@@ -124,7 +124,7 @@ app.get('/enjoy', function(req,res) {
   var grant_id = req.query.g;
   var grant = grants[grant_id];
   if (!grant) {
-    res.send("error: unknown grant.");
+    res.send("error: unknown grant. please try again.");
     return;
   }
   var oauth_token = null; //grant.oauth_token;

@@ -6,14 +6,24 @@
 
 <div class="content">
   <div class="content-padded">
-    <h2>Hi! Enjoy your stay.</h2>
+    <h2>Enjoy your stay.</h2>
     <p>You are now authorized to <a href="{{grant_uri}}">access the Wi-Fi.</a></p>
+    <p style="margin-top:20px">
+      Betahaus now has a members-only chat featuring an address book where you can find people based on skills and tags. You can log in with your Cobot credentials.
+      <br><br>
+      <a href="http://chat.betahaus.com" class="btn btn-primary btn-block">Try the new Betahaus Chat</a>
+    </p>
     <img src="/static/img/cafe.jpg" width="400px">
+
     <script>
+      window.open('{{grant_uri}}');
+    </script>
+    
+    <!--script>
       setTimeout(function() {
         location.href = '{{grant_uri}}';
       },1000);
-    </script>
+    </script-->
   </div>
 </div>
 {% endblock %}

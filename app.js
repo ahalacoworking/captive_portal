@@ -31,12 +31,14 @@ app.set('views', __dirname + '/views');
 
 // oauth2 client -------------------------------------------
 
+/*
 var oauth2 = require('simple-oauth2')({
   clientID: CONFIG.client_id,
   clientSecret: CONFIG.client_secret,
   site: 'https://www.cobot.me',
   tokenPath: '/oauth/access_token'
 });
+*/
 
 var grants = {};
 
@@ -67,26 +69,18 @@ app.get('/', function(req, res) {
 
 app.get('/hello/:grant_id', function(req,res) {
   var grant_id = req.params.grant_id;
-  
-  /*var authorization_uri_member = oauth2.authCode.authorizeURL({
-    redirect_uri: CONFIG.base_uri+"/callback_member?grant="+grant_id,
-    scope: 'read_user'
-  });
-
-  console.log("authorization_uri_member: ",authorization_uri_member);*/
-
   res.render("hello", {status: req.query.status, grant_id: grant_id});
 });
 
 app.post('/login', function(req,res) {
-
   var options = {
     uri: cobot_space_api+"check_ins?access_token="+CONFIG.admin_token,
     method: "POST",
     json: {
       "login": req.body.email,
       "password": req.body.password
-    }
+    },
+    timeout: 4000
   };
 
   console.log("trying to log in: "+req.body.email);
@@ -130,23 +124,14 @@ app.get('/enjoy', function(req,res) {
   var oauth_token = null; //grant.oauth_token;
   var user_name = "Betahaus Member";
 
-  if (oauth_token) {
-    // resolve user details
-    request.get(cobot_space_api+"user?access_token="+oauth_token, function(err, user_res) {
-      console.log("user req result: ",user_res.body);
-      var user = JSON.parse(user_res.body);
-      
-      res.render("enjoy", {user_name:user.name||user.email});
-    });
-  } else {
-    res.render("enjoy", {user_name:user_name, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
-  }
+  res.render("enjoy", {user_name:user_name, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
 });
 
 app.get('/help', function(req,res) {
   res.render("help", {});
 });
 
+/*
 app.get('/admin_auth', function(req,res) {
   var authorization_uri_admin = oauth2.authCode.authorizeURL({
     redirect_uri: CONFIG.base_uri+"/callback_admin",
@@ -170,6 +155,7 @@ app.get('/callback_admin', function(req,res) {
     }
   });
 });
+*/
 
 app.get('/callback_member', function(req,res) {
   var code = req.query.code;
@@ -178,18 +164,6 @@ app.get('/callback_member', function(req,res) {
     var grant_id = req.query.grant;
     var grant = grants[grant_id];
     if (grant) {
-      // break out
-      /*oauth2.authCode.getToken({
-        code: code
-      }, function(error, result) {
-        if (error) {
-          console.log('Access Token Error', error.message);
-        } else {
-          var token = oauth2.accessToken.create(result).token;
-          grant.oauth_token = token.access_token;
-          res.render("breakout",{grant_uri:grant.g+"?g="+grant_id});
-        }
-      });*/
       res.render("breakout",{grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
     } else {
       res.send("error: unknown grant.");
@@ -211,6 +185,8 @@ if (args[2]) {
 var server = app.listen(port, function() {
   console.log('betahaus_captive listening on port %d', server.address().port);
 });
+
+server.timeout = 5000; // 5 second timeout
 
 if (CONFIG.ssl) {
   var options = {

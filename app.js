@@ -76,13 +76,15 @@ app.get('/', function(req, res) {
       timeout: 4000
     }, function(err, cres) {
       var status = cres.statusCode;
-      
+
       if (status >= 200 && status < 400) {
         // everything fine - you shall pass!
+        console.log("mac is known - you shall pass!");
         cres.redirect(grant.g+"?continue_url="+encodeURIComponent(grant.c));
       } else {
         // nope didn't work
         // send them to the login then
+        console.log(grant.mac +" not yet known - let them login.");
         res.redirect("/hello/"+grant_id);
       }
     });

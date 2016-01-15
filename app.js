@@ -52,14 +52,40 @@ app.get('/', function(req, res) {
   if (grant_url) {
     var grant_id = parseInt(Math.random()*100000000000);
     
-    var continue_url = CONFIG.base_uri+"/enjoy?g="+grant_id;
+    var continue_url = "";
     if (req.query.user_continue_url) {
       continue_url = req.query.user_continue_url;
     }
-    
-    grants[grant_id] = {g: grant_url, c: continue_url};
 
-    res.redirect("/hello/"+grant_id);
+    var mac = req.query.client_mac;
+    var grant = {
+      g: grant_url, 
+      c: continue_url, 
+      mac: mac
+    };
+    
+    grants[grant_id] = grant;
+
+    // test mac address
+    request({
+      uri: cobot_space_api+"check_ins?access_token="+CONFIG.admin_token,
+      method: "POST",
+      json: {
+        "token": mac
+      },
+      timeout: 4000
+    }, function(err, cres) {
+      var status = cres.statusCode;
+      
+      if (status >= 200 && status < 400) {
+        // everything fine - you shall pass!
+        cres.redirect(grant.g+"?continue_url="+encodeURIComponent(grant.c));
+      } else {
+        // nope didn't work
+        // send them to the login then
+        res.redirect("/hello/"+grant_id);
+      }
+    });
 
     return;
   }
@@ -92,6 +118,9 @@ app.post('/login', function(req,res) {
     console.log("invalid grant.");
     res.redirect("/");
     return;
+  } else {
+    // add mac address as token
+    options.json.token = grant.mac;
   }
   
   request(options, function(err, cres) {
@@ -99,7 +128,9 @@ app.post('/login', function(req,res) {
     console.log("check-in result ("+status+") for "+req.body.email+": ", cres.body);
 
     if (status >= 200 && status < 400) {
-      res.render("enjoy", {user_name:req.body.email, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
+      // everything fine - you shall pass!
+      cres.redirect(grant.g+"?continue_url="+encodeURIComponent(grant.c)+"&duration=30");
+      // res.render("enjoy", {user_name:req.body.email, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
     } else {
       if (cres.body && cres.body.errors) {
         status = cres.body.errors;
@@ -114,22 +145,22 @@ app.post('/login', function(req,res) {
   });
 });
 
-app.get('/enjoy', function(req,res) {
-  var grant_id = req.query.g;
-  var grant = grants[grant_id];
-  if (!grant) {
-    res.send("error: unknown grant. please try again.");
-    return;
-  }
-  var oauth_token = null; //grant.oauth_token;
-  var user_name = "Betahaus Member";
+// app.get('/enjoy', function(req,res) {
+//   var grant_id = req.query.g;
+//   var grant = grants[grant_id];
+//   if (!grant) {
+//     res.send("error: unknown grant. please try again.");
+//     return;
+//   }
+//   var oauth_token = null; //grant.oauth_token;
+//   var user_name = "Betahaus Member";
 
-  res.render("enjoy", {user_name:user_name, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
-});
+//   res.render("enjoy", {user_name:user_name, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
+// });
 
-app.get('/help', function(req,res) {
-  res.render("help", {});
-});
+// app.get('/help', function(req,res) {
+//   res.render("help", {});
+// });
 
 /*
 app.get('/admin_auth', function(req,res) {

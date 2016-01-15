@@ -131,7 +131,7 @@ app.post('/login', function(req,res) {
 
     if (status >= 200 && status < 400) {
       // everything fine - you shall pass!
-      cres.redirect(grant.g+"?continue_url="+encodeURIComponent(grant.c)+"&duration=30");
+      res.redirect(grant.g+"?continue_url="+encodeURIComponent(grant.c)+"&duration=30");
       // res.render("enjoy", {user_name:req.body.email, grant_uri:grant.g+"?continue_url="+encodeURIComponent(grant.c)});
     } else {
       if (cres.body && cres.body.errors) {

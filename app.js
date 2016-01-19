@@ -71,7 +71,7 @@ app.get('/', function(req, res) {
       uri: cobot_space_api+"check_ins?access_token="+CONFIG.admin_token,
       method: "POST",
       json: {
-        "token": mac
+        login: mac
       },
       timeout: 4000
     }, function(err, cres) {
